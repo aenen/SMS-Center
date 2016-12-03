@@ -3,3 +3,8 @@ C:\Users\Ярослав\YandexDisk\Документы\WCF\Class Work\01.12.2016\
 C:\Users\Ярослав\YandexDisk\Документы\WCF\Class Work\01.12.2016\Lib SMS\obj\Debug\Lib SMS.csprojResolveAssemblyReference.cache
 C:\Users\Ярослав\YandexDisk\Документы\WCF\Class Work\01.12.2016\Lib SMS\obj\Debug\Lib_SMS.dll
 C:\Users\Ярослав\YandexDisk\Документы\WCF\Class Work\01.12.2016\Lib SMS\obj\Debug\Lib_SMS.pdb
+C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\bin\Debug\Lib_SMS.dll
+C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\bin\Debug\Lib_SMS.pdb
+C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib SMS.csprojResolveAssemblyReference.cache
+C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib_SMS.dll
+C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib_SMS.pdb
