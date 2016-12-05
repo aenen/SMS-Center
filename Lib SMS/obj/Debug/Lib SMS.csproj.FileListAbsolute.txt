@@ -8,3 +8,8 @@ C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\bin\Debu
 C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib SMS.csprojResolveAssemblyReference.cache
 C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib_SMS.dll
 C:\#програмування\##Projects\SMS_Center\SMS-Center\Lib SMS\obj\Debug\Lib_SMS.pdb
+C:\#програмування\##Projects\SMS_Center\Lib SMS\bin\Debug\Lib_SMS.dll
+C:\#програмування\##Projects\SMS_Center\Lib SMS\bin\Debug\Lib_SMS.pdb
+C:\#програмування\##Projects\SMS_Center\Lib SMS\obj\Debug\Lib SMS.csprojResolveAssemblyReference.cache
+C:\#програмування\##Projects\SMS_Center\Lib SMS\obj\Debug\Lib_SMS.dll
+C:\#програмування\##Projects\SMS_Center\Lib SMS\obj\Debug\Lib_SMS.pdb

@@ -57,7 +57,7 @@ namespace Lib_SMS
         /// Отправка SMS
         /// </summary>
         /// <param name="number">Номер получателя</param>
-        /// <param name="message">Текст сообщения (до 70 Юникод символов)</param>
+        /// <param name="message">Текст сообщения</param>
         /// <param name="messageId">(не обязательно) Уникальный ключ для возможности слежения за статусом SMS</param>
         /// <returns>Статус сообщения:
         /// >0 — Количество отправленных SMS
@@ -65,13 +65,9 @@ namespace Lib_SMS
         /// -2 — Неправильный формат XML
         /// -3 — Недостаточно кредитов на аккаунте пользователя
         /// -4 — Нет верных номеров получателей
-        /// -5 — Ошибка подключения/исключение
-        /// -6 — Текст сообщения больше 70 символов</returns>
-        public int SendSms(string number, string message, string messageId = "")
+        /// -5 — Ошибка подключения/исключение</returns>
+        public int Send(string number, string message, string messageId = "")
         {
-            if (message.Length > 70)
-                return -6;
-
             try
             {
                 string str_msgId = "";
@@ -134,7 +130,7 @@ namespace Lib_SMS
         /// </summary>
         /// <param name="messageId">Уникальный ключ сообщения</param>
         /// <returns>Строка с датами отправки и доставки, а также статусом сообщения</returns>
-        public string MessageState(string messageId)
+        public string GetState(string messageId)
         {
             try
             {
@@ -189,7 +185,136 @@ namespace Lib_SMS
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return "exception";
+                return "Exception occurred";
+            }
+        }
+
+        /// <summary>
+        /// Получение цены SMS
+        /// </summary>
+        /// <param name="number">Номер получателя</param>
+        /// <param name="message">Текст сообщения</param>
+        /// <returns>>0 — Цена отправки сообщения в гривнах
+        /// -1 — Неправильный логин и/или пароль
+        /// -2 — Неправильный формат XML
+        /// -3 — Ошибка подключения/исключение</returns>
+        public decimal GetPrice(string number, string message)
+        {
+            try
+            {
+                string XML = "XML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                "<SMS>\n" +
+                                    "<operations>\n" +
+                                        "<operation>GETPRICE</operation>\n" +
+                                    "</operations>\n" +
+                                    "<authentification>\n" +
+                                        $"<username>{Login}</username>\n" +
+                                        $"<password>{Password}</password>\n" +
+                                    "</authentification>\n" +
+                                    "<message>\n" +
+                                        $"<sender>{m_sender}</sender>\n" +
+                                        $"<text>{message}</text>\n" +
+                                    "</message>\n" +
+                                    "<numbers>\n" +
+                                        $"<number>{number}</number>\n" +
+                                    "</numbers>\n" +
+                                "</SMS>\n";
+                HttpWebRequest request = WebRequest.Create("http://api.myatompark.com/members/sms/xml.php") as HttpWebRequest;
+                request.Method = "Post";
+                request.ContentType = "application/x-www-form-urlencoded";
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                byte[] data = encoding.GetBytes(XML);
+                request.ContentLength = data.Length;
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(data, 0, data.Length);
+                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine($"Server error (HTTP {response.StatusCode}: {response.StatusDescription}).");
+                        return -3;
+                    }
+
+                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    string xmlResult = reader.ReadToEnd();
+
+                    using (XmlReader xmlReader = XmlReader.Create(new StringReader(xmlResult)))
+                    {
+                        xmlReader.ReadToFollowing("status");
+                        int status = xmlReader.ReadElementContentAsInt();
+                        if (status != 0)
+                            return status;
+
+                        xmlReader.ReadToFollowing("amount");
+                        decimal price = xmlReader.ReadElementContentAsDecimal();
+                        return price;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return -3;
+            }
+        }
+
+        /// <summary>
+        /// Получение баланса
+        /// </summary>
+        /// <returns>>=0 — Баланс пользователя в гривнах
+        /// -1 — Неправильный логин и/или пароль
+        /// -2 — Неправильный формат XML
+        /// -3 — Ошибка подключения/исключение</returns>
+        public decimal GetBalance()
+        {
+            try
+            {
+                string XML = "XML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                "<SMS>\n" +
+                                    "<operations>\n" +
+                                        "<operation>BALANCE</operation>\n" +
+                                    "</operations>\n" +
+                                    "<authentification>\n" +
+                                        $"<username>{Login}</username>\n" +
+                                        $"<password>{Password}</password>\n" +
+                                    "</authentification>\n" +
+                                "</SMS>\n";
+                HttpWebRequest request = WebRequest.Create("http://api.myatompark.com/members/sms/xml.php") as HttpWebRequest;
+                request.Method = "Post";
+                request.ContentType = "application/x-www-form-urlencoded";
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                byte[] data = encoding.GetBytes(XML);
+                request.ContentLength = data.Length;
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(data, 0, data.Length);
+                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine($"Server error (HTTP {response.StatusCode}: {response.StatusDescription}).");
+                        return -3;
+                    }
+
+                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    string xmlResult = reader.ReadToEnd();
+
+                    using (XmlReader xmlReader = XmlReader.Create(new StringReader(xmlResult)))
+                    {
+                        xmlReader.ReadToFollowing("status");
+                        int status = xmlReader.ReadElementContentAsInt();
+                        if (status != 0)
+                            return status;
+
+                        xmlReader.ReadToFollowing("amount");
+                        decimal amount = xmlReader.ReadElementContentAsDecimal();
+                        return amount;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return -3;
             }
         }
     }
